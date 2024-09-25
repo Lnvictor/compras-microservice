@@ -23,7 +23,7 @@ public class CompraController {
     }
 
     @PostMapping
-    public ResponseEntity<Compra> sayHelloPost(@RequestBody CompraDTO dto){
+    public ResponseEntity<CompraDTO> sayHelloPost(@RequestBody CompraDTO dto){
         return ResponseEntity.ok(compraService.salvar(dto));
     }
 }

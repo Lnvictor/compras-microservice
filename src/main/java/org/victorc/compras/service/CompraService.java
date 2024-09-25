@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.victorc.compras.dto.CompraDTO;
 import org.victorc.compras.entity.Compra;
+import org.victorc.compras.mapper.CompraMapper;
 import org.victorc.compras.repository.CompraRepository;
 
 @Service
@@ -12,8 +13,8 @@ import org.victorc.compras.repository.CompraRepository;
 public class CompraService {
     private CompraRepository compraRepository;
 
-    public Compra salvar(CompraDTO compra) {
+    public CompraDTO salvar(CompraDTO compra) {
         Compra compraEntity = Compra.fromDTO(compra);
-        return compraRepository.save(compraEntity);
+        return CompraMapper.INSTANCE.convertEntityToDto(compraRepository.save(compraEntity));
     }
 }
