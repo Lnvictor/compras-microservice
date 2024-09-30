@@ -12,9 +12,13 @@ import org.victorc.compras.repository.CompraRepository;
 @AllArgsConstructor
 public class CompraService {
     private CompraRepository compraRepository;
+    private NotificacaoService notificacaoService;
 
     public CompraDTO salvar(CompraDTO compra) {
-        Compra compraEntity = Compra.fromDTO(compra);
-        return CompraMapper.INSTANCE.convertEntityToDto(compraRepository.save(compraEntity));
+        Compra compraEntity = CompraMapper.INSTANCE.convertDtoToEntity(compra);
+        CompraDTO dto = CompraMapper.INSTANCE.convertEntityToDto(compraRepository.save(compraEntity));
+        notificacaoService.notificar(dto, "efetivacao_compra.ex");
+
+        return dto;
     }
 }

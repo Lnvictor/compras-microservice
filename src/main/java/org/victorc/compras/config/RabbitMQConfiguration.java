@@ -1,14 +1,16 @@
 package org.victorc.compras.config;
 
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.QueueBuilder;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.r2dbc.ConnectionFactoryBuilder;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.amqp.core.Queue;
 
 
 @Configuration
@@ -30,5 +32,26 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public FanoutExchange createFanoutExchange(){}
+    public FanoutExchange createFanoutExchange(){
+        return ExchangeBuilder.fanoutExchange("efetivacao_compra.ex").build();
+    }
+
+    @Bean
+    public Binding createBinding(){
+        return BindingBuilder.bind(createQueue()).to(createFanoutExchange());
+    }
+
+    @Bean
+    public MessageConverter createJsonMessageConverter(){
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory){
+        RabbitTemplate rt = new RabbitTemplate();
+        rt.setConnectionFactory(connectionFactory);
+        rt.setMessageConverter(createJsonMessageConverter());
+
+        return rt;
+    }
 }

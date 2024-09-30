@@ -10,8 +10,10 @@ import org.victorc.compras.entity.Compra;
 public interface CompraMapper {
     final CompraMapper INSTANCE = Mappers.getMapper(CompraMapper.class);
 
+    @Mapping(target = "email", source = "emailComprador")
     CompraDTO convertEntityToDto(Compra entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "emailComprador", source = "email")
     Compra convertDtoToEntity(CompraDTO dto);
 }
